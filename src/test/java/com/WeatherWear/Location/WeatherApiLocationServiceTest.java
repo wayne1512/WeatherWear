@@ -25,7 +25,7 @@ class WeatherApiLocationServiceTest{
     }
 
     @Test
-    void WeatherApiLocationServiceReturnLocationWhenApiIsSuccessful() throws Exception{
+    void GetLocationReturnLocationWhenApiIsSuccessful() throws Exception{
         //Setup
         HttpClient mockClient = mock(HttpClient.class);
         HttpResponse mockResponse = mock(HttpResponse.class);
@@ -64,7 +64,7 @@ class WeatherApiLocationServiceTest{
     }
 
     @Test
-    void WeatherApiLocationServiceUnsuccessfulWhenApiDoesntReturnLat() throws Exception{
+    void GetLocationUnsuccessfulWhenApiDoesntReturnLat() throws Exception{
         //Setup
         HttpClient mockClient = mock(HttpClient.class);
         HttpResponse mockResponse = mock(HttpResponse.class);
@@ -97,7 +97,7 @@ class WeatherApiLocationServiceTest{
     }
 
     @Test
-    void WeatherApiLocationServiceUnsuccessfulWhenApiDoesntReturnLon() throws Exception{
+    void GetLocationUnsuccessfulWhenApiDoesntReturnLon() throws Exception{
         //Setup
         HttpClient mockClient = mock(HttpClient.class);
         HttpResponse mockResponse = mock(HttpResponse.class);
@@ -130,7 +130,7 @@ class WeatherApiLocationServiceTest{
     }
 
     @Test
-    void WeatherApiLocationServiceUnsuccessfulWhenApiDoesntReturnLatAndLon() throws Exception{
+    void GetLocationUnsuccessfulWhenApiDoesntReturnLatAndLon() throws Exception{
         //Setup
         HttpClient mockClient = mock(HttpClient.class);
         HttpResponse mockResponse = mock(HttpResponse.class);
