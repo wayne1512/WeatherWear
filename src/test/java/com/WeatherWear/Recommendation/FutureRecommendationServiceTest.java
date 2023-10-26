@@ -1,0 +1,107 @@
+package com.WeatherWear.Recommendation;
+
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
+
+import static com.github.stefanbirkner.systemlambda.SystemLambda.tapSystemOutNormalized;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
+class FutureRecommendationServiceTest{
+
+    RecommendationService recommendationService;
+
+    @BeforeEach
+    void setup(){
+        recommendationService = new FutureRecommendationService();
+    }
+
+    @Test
+    void RecommendRainShouldRecommendUmbrellaWhenRainIs1mm() throws Exception{
+        String text = tapSystemOutNormalized(() -> {
+            recommendationService.recommendRain(1);
+        });
+
+
+        assertEquals("It will be raining so you do need an umbrella.\n", text);
+    }
+
+    @Test
+    void RecommendRainShouldRecommendUmbrellaWhenRainIs5mm() throws Exception{
+        String text = tapSystemOutNormalized(() -> {
+            recommendationService.recommendRain(5);
+        });
+
+
+        assertEquals("It will be raining so you do need an umbrella.\n", text);
+    }
+
+    @Test
+    void RecommendRainShouldNotRecommendUmbrellaWhenRainIs0mm() throws Exception{
+        String text = tapSystemOutNormalized(() -> {
+            recommendationService.recommendRain(0);
+        });
+
+
+        assertEquals("It will not be raining so you don't need an umbrella.\n", text);
+    }
+
+    @Test
+    void RecommendRainShouldRecommendLightClothesWhenTempIs40() throws Exception{
+        String text = tapSystemOutNormalized(() -> {
+            recommendationService.recommendTemperature(40);
+        });
+
+
+        assertEquals("It will be warm so you should wear light clothing.\n", text);
+    }
+
+    @Test
+    void RecommendRainShouldRecommendLightClothesWhenTempIs16() throws Exception{
+        String text = tapSystemOutNormalized(() -> {
+            recommendationService.recommendTemperature(16);
+        });
+
+
+        assertEquals("It will be warm so you should wear light clothing.\n", text);
+    }
+
+    @Test
+    void RecommendRainShouldRecommendWarmClothesWhenTempIs15() throws Exception{
+        String text = tapSystemOutNormalized(() -> {
+            recommendationService.recommendTemperature(15);
+        });
+
+
+        assertEquals("It will be cold so you should wear warm clothing.\n", text);
+    }
+
+    @Test
+    void RecommendRainShouldRecommendWarmClothesWhenTempIs0() throws Exception{
+        String text = tapSystemOutNormalized(() -> {
+            recommendationService.recommendTemperature(0);
+        });
+
+
+        assertEquals("It will be cold so you should wear warm clothing.\n", text);
+    }
+
+    @Test
+    void RecommendRainShouldRecommendWarmClothesWhenTempIsNegative5() throws Exception{
+        String text = tapSystemOutNormalized(() -> {
+            recommendationService.recommendTemperature(-5);
+        });
+
+
+        assertEquals("It will be cold so you should wear warm clothing.\n", text);
+    }
+
+    @Test
+    void RecommendShouldCallTemperatureAndRainMethods(){
+        recommendationService = Mockito.spy(recommendationService);
+
+        recommendationService.recommend(10,1.2f);
+        Mockito.verify(recommendationService).recommendTemperature(10);
+        Mockito.verify(recommendationService).recommendRain(1.2f);
+    }
+}

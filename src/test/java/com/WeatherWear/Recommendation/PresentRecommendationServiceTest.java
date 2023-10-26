@@ -2,21 +2,18 @@ package com.WeatherWear.Recommendation;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mock;
 import org.mockito.Mockito;
 
-import static com.github.stefanbirkner.systemlambda.SystemLambda.tapSystemOut;
 import static com.github.stefanbirkner.systemlambda.SystemLambda.tapSystemOutNormalized;
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.internal.matchers.text.ValuePrinter.print;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
-class RecommendationServiceTest{
+class PresentRecommendationServiceTest{
 
     RecommendationService recommendationService;
 
     @BeforeEach
     void setup(){
-        recommendationService = new RecommendationService();
+        recommendationService = new PresentRecommendationService();
     }
 
     @Test
@@ -99,7 +96,6 @@ class RecommendationServiceTest{
         assertEquals("It is cold so you should wear warm clothing.\n", text);
     }
 
-    //todo spy on main method
     @Test
     void RecommendShouldCallTemperatureAndRainMethods(){
         recommendationService = Mockito.spy(recommendationService);
