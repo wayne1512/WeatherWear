@@ -1,44 +1,94 @@
 package com.WeatherWear;
 
 import com.WeatherWear.Input.InputService;
+import com.WeatherWear.Location.IPApiLocationService;
 import com.WeatherWear.Location.LocationResult;
 import com.WeatherWear.Location.LocationService;
 import com.WeatherWear.Location.WeatherApiLocationService;
 import com.WeatherWear.Recommendation.FutureRecommendationService;
 import com.WeatherWear.Recommendation.PresentRecommendationService;
+import com.WeatherWear.Recommendation.RecommendationService;
 import com.WeatherWear.Weather.WeatherApiWeatherService;
 import com.WeatherWear.Weather.WeatherResult;
+import com.WeatherWear.Weather.WeatherService;
 
 import java.util.concurrent.*;
 
 public class WeatherWear{
     LocationService locationService = new WeatherApiLocationService();
-    LocationService backupLocationService = new WeatherApiLocationService();
+    LocationService backupLocationService = new IPApiLocationService();
     ExecutorService executor = Executors.newSingleThreadExecutor();
     InputService inputService = new InputService();
+    RecommendationService presentRecommendationService = new PresentRecommendationService();
+    RecommendationService futureRecommendationService = new FutureRecommendationService();
+    WeatherService weatherService = new WeatherApiWeatherService();
 
+    public void setLocationService(LocationService locationService){
+        this.locationService = locationService;
+    }
+
+    public void setBackupLocationService(LocationService backupLocationService){
+        this.backupLocationService = backupLocationService;
+    }
+
+    public void setInputService(InputService inputService){
+        this.inputService = inputService;
+    }
+
+    public void setPresentRecommendationService(RecommendationService presentRecommendationService){
+        this.presentRecommendationService = presentRecommendationService;
+    }
+
+    public void setFutureRecommendationService(RecommendationService futureRecommendationService){
+        this.futureRecommendationService = futureRecommendationService;
+    }
+
+    public void setWeatherService(WeatherService weatherService){
+        this.weatherService = weatherService;
+    }
+
+    public void menu(){
+        int input = 0;
+
+        do {
+            input = inputService.readMenuOption("WeatherWear.com\n" +
+                    "---------------\n" +
+                    "1. Recommend clothing for current location\n" +
+                    "2. Recommend clothing for future location\n" +
+                    "3. Exit\n" +
+                    "Enter choice:",3);
+
+            switch (input){
+                case 1:
+                    recommendCurrent();
+                    break;
+                case 2:
+                    recommendAtArrival();
+                    break;
+            }
+        } while (input != 3);
+    }
 
     public void recommendCurrent(){
         Callable<LocationResult> task = locationService::getLocation;
         Future<LocationResult> future = executor.submit(task);
 
-        LocationResult locationResult;
+        LocationResult locationResult = null;
 
         try {
             locationResult = future.get(3, TimeUnit.SECONDS);
         } catch (ExecutionException | TimeoutException | InterruptedException e) {
-            throw new RuntimeException(e);
+            //ignore
         } finally {
             future.cancel(true);
         }
 
-        if (!locationResult.isSuccess()){
+        if (locationResult == null || !locationResult.isSuccess()){
             locationResult = backupLocationService.getLocation();
         }
 
-        LocationResult loc = new WeatherApiLocationService().getLocation();
-        WeatherResult weatherResult = new WeatherApiWeatherService().getCurrentWeather(loc.getLat(),loc.getLon());
-        new PresentRecommendationService().recommend(weatherResult.getTemp(),weatherResult.getRain());
+        WeatherResult weatherResult = weatherService.getCurrentWeather(locationResult.getLat(),locationResult.getLon());
+        presentRecommendationService.recommend(weatherResult.getTemp(),weatherResult.getRain());
     }
 
     public void recommendAtArrival(){
@@ -46,7 +96,7 @@ public class WeatherWear{
 
         var arrivalDate = inputService.readArrivalDate();
 
-        WeatherResult weatherResult = new WeatherApiWeatherService().getWeatherForecastForAirport(airportCode,arrivalDate);
-        new FutureRecommendationService().recommend(weatherResult.getTemp(),weatherResult.getRain());
+        WeatherResult weatherResult = weatherService.getWeatherForecastForAirport(airportCode,arrivalDate);
+        futureRecommendationService.recommend(weatherResult.getTemp(),weatherResult.getRain());
     }
 }

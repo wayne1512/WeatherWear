@@ -67,4 +67,22 @@ public class InputService{
             str = s.nextLine();
         }
     }
+
+    public int readMenuOption(String menuString, int maxOption){
+        System.out.println(menuString);
+
+        while (true){
+            try {
+                int choice = s.nextInt();
+
+                if(choice <= 0 || choice > maxOption)
+                    System.out.println("Invalid input: try again");
+                else return choice;
+
+            } catch (Exception e) {
+                System.out.println("Invalid input: try again");
+            }
+
+        }
+    }
 }

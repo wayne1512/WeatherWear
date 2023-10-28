@@ -16,13 +16,11 @@ import java.util.Scanner;
 import java.util.concurrent.*;
 
 public class Main{
-    public static void main(String[] args) throws IOException, InterruptedException{
+    public static void main(String[] args){
 
+        WeatherWear weatherWear = new WeatherWear();
 
-
-
-
-        new WeatherWear().recommendAtArrival();
+        weatherWear.menu();
 
     }
 }

@@ -2,19 +2,17 @@ package com.WeatherWear.Input;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.Timeout;
-import org.mockito.Mock;
 import org.mockito.Mockito;
 
 import java.time.Duration;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.InputMismatchException;
 import java.util.Scanner;
 
 import static com.github.stefanbirkner.systemlambda.SystemLambda.tapSystemOutNormalized;
-import static com.github.stefanbirkner.systemlambda.SystemLambda.withTextFromSystemIn;
-import static java.util.concurrent.TimeUnit.SECONDS;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTimeoutPreemptively;
 import static org.mockito.Mockito.mock;
 
 class InputServiceTest{
@@ -377,6 +375,111 @@ class InputServiceTest{
 
 
             assertEquals("Enter Date code of arrival in the form YYYY-MM-DD (cannot be more than 10 days in the future)\nInvalid format: try again\n", text);
+
+        });
+    }
+
+    @Test
+    void readMenuOptionShouldAcceptOne(){
+        String menuString = "dummy menu here";
+
+        Scanner mockScanner = mock(Scanner.class);
+        Mockito.when(mockScanner.nextInt()).thenReturn(1);
+
+        inputService.setScanner(mockScanner);
+
+        assertTimeoutPreemptively(Duration.ofSeconds(10),()-> {
+
+            String text = tapSystemOutNormalized(() -> {
+                assertEquals(1, inputService.readMenuOption(menuString,3));
+            });
+
+
+            assertEquals(menuString+"\n", text);
+
+        });
+    }
+
+    @Test
+    void readMenuOptionShouldAcceptLastOption(){
+        String menuString = "dummy menu here";
+
+        Scanner mockScanner = mock(Scanner.class);
+        Mockito.when(mockScanner.nextInt()).thenReturn(3);
+
+        inputService.setScanner(mockScanner);
+
+        assertTimeoutPreemptively(Duration.ofSeconds(10),()-> {
+
+            String text = tapSystemOutNormalized(() -> {
+                assertEquals(3, inputService.readMenuOption(menuString,3));
+            });
+
+
+            assertEquals(menuString+"\n", text);
+
+        });
+    }
+
+    @Test
+    void readMenuOptionShouldNotAcceptNumberTooBig(){
+        String menuString = "dummy menu here";
+
+        Scanner mockScanner = mock(Scanner.class);
+        Mockito.when(mockScanner.nextInt()).thenReturn(4).thenReturn(3);
+
+        inputService.setScanner(mockScanner);
+
+        assertTimeoutPreemptively(Duration.ofSeconds(10),()-> {
+
+            String text = tapSystemOutNormalized(() -> {
+                assertEquals(3, inputService.readMenuOption(menuString,3));
+            });
+
+
+            assertEquals(menuString+"\nInvalid input: try again\n", text);
+
+        });
+    }
+
+    @Test
+    void readMenuOptionShouldNotAcceptZero(){
+        String menuString = "dummy menu here";
+
+        Scanner mockScanner = mock(Scanner.class);
+        Mockito.when(mockScanner.nextInt()).thenReturn(0).thenReturn(3);
+
+        inputService.setScanner(mockScanner);
+
+        assertTimeoutPreemptively(Duration.ofSeconds(10),()-> {
+
+            String text = tapSystemOutNormalized(() -> {
+                assertEquals(3, inputService.readMenuOption(menuString,3));
+            });
+
+
+            assertEquals(menuString+"\nInvalid input: try again\n", text);
+
+        });
+    }
+
+    @Test
+    void readMenuOptionShouldHandleInputMismatchException(){
+        String menuString = "dummy menu here";
+
+        Scanner mockScanner = mock(Scanner.class);
+        Mockito.when(mockScanner.nextInt()).thenThrow(InputMismatchException.class).thenReturn(3);
+
+        inputService.setScanner(mockScanner);
+
+        assertTimeoutPreemptively(Duration.ofSeconds(10),()-> {
+
+            String text = tapSystemOutNormalized(() -> {
+                assertEquals(3, inputService.readMenuOption(menuString,3));
+            });
+
+
+            assertEquals(menuString+"\nInvalid input: try again\n", text);
 
         });
     }
