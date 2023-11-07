@@ -155,4 +155,33 @@ class IPApiLocationServiceTest{
         //Verify
         assertFalse(res.isSuccess());
     }
+
+    @Test
+    void GetLocationUnsuccessfulWhenApiDoesntReturnAnyJson() throws Exception{
+        //Setup
+        HttpClient mockClient = mock(HttpClient.class);
+        HttpResponse mockResponse = mock(HttpResponse.class);
+
+
+        String locationJson = null;
+        Mockito.when(mockResponse.body()).thenReturn(locationJson);
+        Mockito.when(mockResponse.statusCode()).thenReturn(200);
+        Mockito.when(mockClient.send(Mockito.any(HttpRequest.class), Mockito.any(HttpResponse.BodyHandler.class))).thenReturn(mockResponse);
+
+        ipApiLocationService.setHttpClient(mockClient);
+
+        ObjectMapper mockMapper = mock(ObjectMapper.class);
+        ipApiLocationService.setMapper(mockMapper);
+
+        JsonNode mockApiResponseBodyRoot = mock(JsonNode.class);
+
+        Mockito.when(mockMapper.readTree(locationJson)).thenThrow(NullPointerException.class);
+
+
+        //Exercise
+        LocationResult res = ipApiLocationService.getLocation();
+
+        //Verify
+        assertFalse(res.isSuccess());
+    }
 }

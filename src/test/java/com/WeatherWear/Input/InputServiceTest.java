@@ -380,6 +380,27 @@ class InputServiceTest{
     }
 
     @Test
+    void readArrivalDateShouldNotAcceptInvalidDate(){
+
+
+        Scanner mockScanner = mock(Scanner.class);
+        Mockito.when(mockScanner.nextLine()).thenReturn("2023-10-32").thenReturn(today.format(dateTimeFormatter));
+
+        inputService.setScanner(mockScanner);
+
+        assertTimeoutPreemptively(Duration.ofSeconds(10),()-> {
+
+            String text = tapSystemOutNormalized(() -> {
+                assertEquals(today, inputService.readArrivalDate());
+            });
+
+
+            assertEquals("Enter Date code of arrival in the form YYYY-MM-DD (cannot be more than 10 days in the future)\nInvalid format: try again\n", text);
+
+        });
+    }
+
+    @Test
     void readMenuOptionShouldAcceptOne(){
         String menuString = "dummy menu here";
 

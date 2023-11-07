@@ -47,7 +47,7 @@ class FutureRecommendationServiceTest{
     }
 
     @Test
-    void RecommendRainShouldRecommendLightClothesWhenTempIs40() throws Exception{
+    void RecommendTemperatureShouldRecommendLightClothesWhenTempIs40() throws Exception{
         String text = tapSystemOutNormalized(() -> {
             recommendationService.recommendTemperature(40);
         });
@@ -57,7 +57,7 @@ class FutureRecommendationServiceTest{
     }
 
     @Test
-    void RecommendRainShouldRecommendLightClothesWhenTempIs16() throws Exception{
+    void RecommendTemperatureShouldRecommendLightClothesWhenTempIs16() throws Exception{
         String text = tapSystemOutNormalized(() -> {
             recommendationService.recommendTemperature(16);
         });
@@ -67,7 +67,7 @@ class FutureRecommendationServiceTest{
     }
 
     @Test
-    void RecommendRainShouldRecommendWarmClothesWhenTempIs15() throws Exception{
+    void RecommendTemperatureShouldRecommendWarmClothesWhenTempIs15() throws Exception{
         String text = tapSystemOutNormalized(() -> {
             recommendationService.recommendTemperature(15);
         });
@@ -77,7 +77,7 @@ class FutureRecommendationServiceTest{
     }
 
     @Test
-    void RecommendRainShouldRecommendWarmClothesWhenTempIs0() throws Exception{
+    void RecommendTemperatureShouldRecommendWarmClothesWhenTempIs0() throws Exception{
         String text = tapSystemOutNormalized(() -> {
             recommendationService.recommendTemperature(0);
         });
@@ -87,7 +87,7 @@ class FutureRecommendationServiceTest{
     }
 
     @Test
-    void RecommendRainShouldRecommendWarmClothesWhenTempIsNegative5() throws Exception{
+    void RecommendTemperatureShouldRecommendWarmClothesWhenTempIsNegative5() throws Exception{
         String text = tapSystemOutNormalized(() -> {
             recommendationService.recommendTemperature(-5);
         });

@@ -74,6 +74,7 @@ public class InputService{
         while (true){
             try {
                 int choice = s.nextInt();
+                s.nextLine(); //clear token
 
                 if(choice <= 0 || choice > maxOption)
                     System.out.println("Invalid input: try again");
