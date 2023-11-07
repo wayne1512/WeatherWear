@@ -87,7 +87,20 @@ public class WeatherWear{
             locationResult = backupLocationService.getLocation();
         }
 
+        if (locationResult == null || !locationResult.isSuccess()){
+            //there is nothing we can do
+            System.out.println("Failed to get location - cannot provide recommendation");
+            return;
+        }
+
         WeatherResult weatherResult = weatherService.getCurrentWeather(locationResult.getLat(),locationResult.getLon());
+
+        if (weatherResult == null || !weatherResult.isSuccess()){
+            //there is nothing we can do
+            System.out.println("Failed to get weather for location - cannot provide recommendation");
+            return;
+        }
+
         presentRecommendationService.recommend(weatherResult.getTemp(),weatherResult.getRain());
     }
 
@@ -97,6 +110,11 @@ public class WeatherWear{
         var arrivalDate = inputService.readArrivalDate();
 
         WeatherResult weatherResult = weatherService.getWeatherForecastForAirport(airportCode,arrivalDate);
+        if (weatherResult == null || !weatherResult.isSuccess()){
+            //there is nothing we can do
+            System.out.println("Failed to get weather for location - cannot provide recommendation");
+            return;
+        }
         futureRecommendationService.recommend(weatherResult.getTemp(),weatherResult.getRain());
     }
 }
