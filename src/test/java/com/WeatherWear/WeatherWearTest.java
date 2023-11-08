@@ -69,7 +69,7 @@ class WeatherWearTest{
             weatherWear.recommendCurrent();
         });
 
-        assertEquals("Failed to get weather for location- cannot provide recommendation\n",text);
+        assertEquals("Failed to get weather for location - cannot provide recommendation\n",text);
 
 
         verify(locService,times(1)).getLocation();
@@ -189,7 +189,7 @@ class WeatherWearTest{
             weatherWear.recommendAtArrival();
         });
 
-        assertEquals("Failed to get weather for location- cannot provide recommendation\n",text);
+        assertEquals("Failed to get weather for location - cannot provide recommendation\n",text);
 
         verify(weatherService,times(1)).getWeatherForecastForAirport(any(),any());
         verify(presentRecommendationService,never()).recommend(anyInt(),anyFloat());
